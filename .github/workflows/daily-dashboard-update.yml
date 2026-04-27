@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -26,7 +26,10 @@ jobs:
           VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}
           CHANNELS_CSV_PATH: data/channels_metrics.csv
           VK_POSTS_CSV_PATH: data/vk_posts_metrics.csv
-        run: python scripts/update_dashboard_data.py
+        run: |
+          ls -la
+          ls -la scripts || true
+          python scripts/update_dashboard_data.py
 
       - name: Commit changes
         run: |

@@ -8,15 +8,16 @@ from urllib.request import urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DATA_FILE = ROOT / "web" / "data" / "alterra_metrics.json"
-INPUT_DIR = ROOT / "data"
 
+PRIMARY_DATA_FILE = ROOT / "web" / "data" / "alterra_metrics.json"
+FALLBACK_DATA_FILE = ROOT / "scripts" / "web" / "data" / "alterra_metrics.json"
+DATA_FILE = PRIMARY_DATA_FILE if PRIMARY_DATA_FILE.exists() else FALLBACK_DATA_FILE
+
+PRIMARY_INPUT_DIR = ROOT / "data"
+FALLBACK_INPUT_DIR = ROOT / "scripts" / "data"
+INPUT_DIR = PRIMARY_INPUT_DIR if PRIMARY_INPUT_DIR.exists() else FALLBACK_INPUT_DIR
 
 DEFAULT_CHANNELS = ("Сайт", "Telegram", "VK")
-
-
-def parse_iso_date(value):
-    return datetime.strptime(value, "%Y-%m-%d").date()
 
 
 def safe_float(value, default=0.0):
@@ -37,7 +38,7 @@ def safe_int(value, default=0):
         return default
 
 
-def read_csv_rows(path):
+def read_csv_rows(path: Path):
     if not path.exists():
         return []
     with path.open("r", encoding="utf-8") as f:
@@ -62,7 +63,7 @@ def calc_channel_metrics(name, traffic, leads, shows, bookings, deals, ad_spend,
     }
 
 
-def load_channels_from_csv(path):
+def load_channels_from_csv(path: Path):
     rows = read_csv_rows(path)
     if not rows:
         return []
@@ -111,6 +112,7 @@ def vk_api_request(method, params):
     token = os.getenv("VK_API_TOKEN", "").strip()
     if not token:
         return None
+
     query = {
         **params,
         "access_token": token,
@@ -119,6 +121,7 @@ def vk_api_request(method, params):
     url = f"https://api.vk.com/method/{method}?{urlencode(query)}"
     with urlopen(url, timeout=30) as response:
         payload = json.loads(response.read().decode("utf-8"))
+
     if payload.get("error"):
         raise RuntimeError(f"VK API error: {payload['error'].get('error_msg')}")
     return payload.get("response")
@@ -182,10 +185,11 @@ def load_vk_posts_from_api():
                 "romi": 0.0,
             }
         )
+
     return posts
 
 
-def merge_vk_posts_with_csv(vk_posts, csv_path):
+def merge_vk_posts_with_csv(vk_posts, csv_path: Path):
     rows = read_csv_rows(csv_path)
     if not rows:
         return vk_posts
@@ -198,6 +202,7 @@ def merge_vk_posts_with_csv(vk_posts, csv_path):
         date = (row.get("date") or "").strip()
         if not date:
             continue
+
         target = by_date.get(date, [])
         if target:
             post = target[0]
@@ -206,6 +211,7 @@ def merge_vk_posts_with_csv(vk_posts, csv_path):
             post["shows"] += safe_int(row.get("shows"))
             post["bookings"] += safe_int(row.get("bookings"))
             post["deals"] += safe_int(row.get("deals"))
+
             ad_spend = safe_float(row.get("ad_spend"))
             margin = safe_float(row.get("margin"))
             post["cpl"] = round(ad_spend / post["leads"], 2) if post["leads"] > 0 else 0
@@ -221,6 +227,7 @@ def merge_vk_posts_with_csv(vk_posts, csv_path):
             ctr = safe_float(row.get("ctr"))
             if ctr == 0 and reach > 0:
                 ctr = round((clicks / reach) * 100, 2)
+
             vk_posts.append(
                 {
                     "date": date,
@@ -263,6 +270,9 @@ def ensure_channels(channels, fallback):
 
 
 def main():
+    if not DATA_FILE.exists():
+        raise FileNotFoundError(f"Не найден файл метрик: {DATA_FILE}")
+
     with DATA_FILE.open("r", encoding="utf-8") as f:
         current_data = json.load(f)
 

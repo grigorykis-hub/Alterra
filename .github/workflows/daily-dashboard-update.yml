@@ -23,7 +23,7 @@ jobs:
           python-version: "3.12"
 
       - name: Update dashboard data
-        working-directory: "Альтера"
+        working-directory: "Арнеды OPC"
         env:
           VK_API_TOKEN: ${{ secrets.VK_API_TOKEN }}
           VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}

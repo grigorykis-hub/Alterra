@@ -1,16 +1,7 @@
-name: Daily Dashboard Update
-
-on:
-  schedule:
-    - cron: "10 3 * * *"
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -27,9 +18,10 @@ jobs:
           CHANNELS_CSV_PATH: data/channels_metrics.csv
           VK_POSTS_CSV_PATH: data/vk_posts_metrics.csv
         run: |
+          set -euxo pipefail
           ls -la
           ls -la scripts || true
-          python scripts/update_dashboard_data.py
+          python -u scripts/update_dashboard_data.py
 
       - name: Commit changes
         run: |

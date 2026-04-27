@@ -22,6 +22,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Debug repository structure
+        run: |
+          set -euxo pipefail
+          ls -la
+          ls -la scripts || true
+          ls -la web || true
+          ls -la web/data || true
+
       - name: Update dashboard data
         env:
           VK_API_TOKEN: ${{ secrets.VK_API_TOKEN }}
@@ -30,15 +38,17 @@ jobs:
           VK_POSTS_CSV_PATH: data/vk_posts_metrics.csv
         run: |
           set -euxo pipefail
-          ls -la
-          ls -la scripts
           python -u scripts/update_dashboard_data.py
 
       - name: Commit changes
         run: |
+          set -euxo pipefail
           if git diff --quiet; then
             echo "No changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: daily dashboard metrics update"
+          git push

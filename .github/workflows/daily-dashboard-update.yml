@@ -23,7 +23,6 @@ jobs:
           python-version: "3.12"
 
       - name: Update dashboard data
-        working-directory: "Арнеды OPC"
         env:
           VK_API_TOKEN: ${{ secrets.VK_API_TOKEN }}
           VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}
@@ -36,14 +35,10 @@ jobs:
           python -u scripts/update_dashboard_data.py
 
       - name: Commit changes
-        working-directory: "Альтера"
         run: |
           if git diff --quiet; then
             echo "No changes"
             exit 0
           fi
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add web/data/alterra_metrics.json
-          git commit -m "chore: daily dashboard metrics update"
-          git push
+          git config user.email "41898282+github-actions[bot]@users.noreply

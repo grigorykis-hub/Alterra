@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alterra Dashboard</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #121b30;
+      --line: #253556;
+      --text: #e8efff;
+      --muted: #9cb0d5;
+      --accent: #4d8dff;
+      --ok: #2ac769;
+      --warn: #ffb020;
+      --bad: #ff5d5d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: radial-gradient(circle at top, #13203a, var(--bg));
+      color: var(--text);
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #1f3f7c, #2b5aaa);
+      border: 1px solid #4f72b5;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .hero h1 { margin: 0 0 6px; font-size: 28px; }
+    .hero p { margin: 0; color: #d9e7ff; }
+    .small { color: #d9e7ff; font-size: 12px; margin-top: 6px; }
+    .tabs { display: flex; gap: 8px; margin: 10px 0 14px; }
+    .tab-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); }
+    .tab { display: none; }
+    .tab.active { display: block; }
+    .kpis {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-bottom: 12px;
+    }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .kpi-title { color: var(--muted); font-size: 12px; }
+    .kpi-value { font-size: 24px; font-weight: 700; margin: 4px 0; }
+    .kpi-note { font-size: 12px; color: var(--muted); }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: left; }
+    th { color: var(--muted); font-weight: 600; }
+    .scroll { overflow: auto; }
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    select, button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1a2741;
+      color: var(--text);
+      padding: 9px 10px;
+    }
+    button { cursor: pointer; background: #24467f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Alterra Dashboard</h1>
+      <p>Сквозные KPI каналов + аналитика постов VK</p>
+      <div id="updatedAt" class="small">Последнее обновление: загрузка...</div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="overview">Каналы</button>
+      <button class="tab-btn" data-tab="vk">Посты VK</button>
+    </div>
+
+    <section id="overview" class="tab active">
+      <div class="filters">
+        <div class="card">
+          <div class="kpi-title">Период</div>
+          <select>
+            <option>Текущий месяц</option>
+            <option>Квартал</option>
+            <option>90 дней</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Данные</div>
+          <button id="refreshBtn">Обновить</button>
+        </div>
+      </div>
+
+      <div id="kpis" class="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Лиды и договоры по каналам</h3>
+          <canvas id="channelsChart" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h3>Воронка</h3>
+          <canvas id="funnelChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="card scroll">
+        <h3>Таблица каналов</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Канал</th><th>Трафик</th><th>Лиды</th><th>CPL</th><th>Показы</th>
+              <th>Брони</th><th>Договоры</th><th>CAC</th><th>ROMI</th>
+            </tr>
+          </thead>
+          <tbody id="channelsTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="vk" class="tab">
+      <div class="filters">
+        <div class="card">
+          <div class="kpi-title">Месяц</div>
+          <select id="vkMonth">
+            <option value="all">Все</option>
+            <option value="2026-04" selected>2026-04</option>
+            <option value="2026-03">2026-03</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Сортировка</div>
+          <select id="vkSort">
+            <option value="romi">По ROMI</option>
+            <option value="leads">По лидам</option>
+            <option value="ctr">По CTR</option>
+          </select>
+        </div>
+        <div class="card">
+          <div class="kpi-title">Данные</div>
+          <button id="refreshVkBtn">Обновить VK</button>
+        </div>
+      </div>
+
+      <div id="vkKpis" class="kpis"></div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Лиды/договоры по постам</h3>
+          <canvas id="vkLeadsChart" height="220"></canvas>
+        </div>
+        <div class="card">
+          <h3>ER и CTR</h3>
+          <canvas id="vkRateChart" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="card scroll">
+        <h3>Показатели постов VK</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Дата</th><th>Тема</th><th>Формат</th><th>Охват</th><th>ER%</th><th>CTR%</th>
+              <th>Клики</th><th>Лиды</th><th>CPL</th><th>Показы</th><th>Брони</th><th>Договоры</th><th>ROMI</th><th>Статус</th>
+            </tr>
+          </thead>
+          <tbody id="vkTable"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    let channels = [];
+    let funnel = { traffic: 0, leads: 0, qualified: 0, shows: 0, bookings: 0, deals: 0 };
+    let vkPosts = [];
+    let channelsChart;
+    let funnelChart;
+    let vkLeadsChart;
+    let vkRateChart;
+
+    function money(v) {
+      return new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(v);
+    }
+    function pct(v) { return `${Number(v).toFixed(1)}%`; }
+
+    async function loadData() {
+      const res = await fetch(`/web/data/alterra_metrics.json?v=${Date.now()}`);
+      if (!res.ok) throw new Error("Файл метрик недоступен");
+      const data = await res.json();
+      channels = data.channels || [];
+      funnel = data.funnel || funnel;
+      vkPosts = data.vk_posts || [];
+      document.getElementById("updatedAt").textContent =
+        `Последнее обновление: ${new Date(data.updated_at).toLocaleString("ru-RU")}`;
+    }
+
+    function status(actual, plan) {
+      if (actual >= plan) return ["ok", "В плане"];
+      if (actual >= plan * 0.9) return ["warn", "Рядом с планом"];
+      return ["bad", "Ниже плана"];
+    }
+
+    function renderKpis() {
+      const leads = channels.reduce((s, c) => s + c.leads, 0);
+      const deals = channels.reduce((s, c) => s + c.deals, 0);
+      const avgCpl = channels.reduce((s, c) => s + c.cpl, 0) / channels.length;
+      const avgRomi = channels.reduce((s, c) => s + c.romi, 0) / channels.length;
+      const conv = leads ? (deals / leads) * 100 : 0;
+      const kpis = [
+        ["Лиды", leads, 600, "num"],
+        ["Договоры", deals, 24, "num"],
+        ["Средний CPL", avgCpl, 1400, "rev"],
+        ["Средний ROMI", avgRomi, 2.8, "float"],
+        ["CR лид->договор", conv, 4.2, "pct"]
+      ];
+      const box = document.getElementById("kpis");
+      box.innerHTML = "";
+      for (const [title, value, plan, type] of kpis) {
+        const [cls, note] = type === "rev" ? status(plan, value) : status(value, plan);
+        let text = value;
+        if (type === "num") text = new Intl.NumberFormat("ru-RU").format(value);
+        if (type === "rev") text = money(value);
+        if (type === "float") text = Number(value).toFixed(2);
+        if (type === "pct") text = pct(value);
+        const planText = type === "rev" ? money(plan) : (type === "pct" ? pct(plan) : plan);
+        box.insertAdjacentHTML("beforeend",
+          `<div class="card"><div class="kpi-title">${title}</div><div class="kpi-value">${text}</div><div class="kpi-note ${cls}">${note} | План: ${planText}</div></div>`);
+      }
+    }
+
+    function renderChannelsTable() {
+      const body = document.getElementById("channelsTable");
+      body.innerHTML = "";
+      for (const c of channels) {
+        body.insertAdjacentHTML("beforeend", `<tr>
+          <td>${c.name}</td><td>${new Intl.NumberFormat("ru-RU").format(c.traffic)}</td><td>${c.leads}</td><td>${money(c.cpl)}</td>
+          <td>${c.shows}</td><td>${c.bookings}</td><td>${c.deals}</td><td>${money(c.cac)}</td><td>${Number(c.romi).toFixed(2)}</td>
+        </tr>`);
+      }
+    }
+
+    function renderCharts() {
+      if (channelsChart) channelsChart.destroy();
+      if (funnelChart) funnelChart.destroy();
+      channelsChart = new Chart(document.getElementById("channelsChart"), {
+        type: "bar",
+        data: { labels: channels.map(x => x.name), datasets: [
+          { label: "Лиды", data: channels.map(x => x.leads), backgroundColor: "#4d8dff" },
+          { label: "Договоры", data: channels.map(x => x.deals), backgroundColor: "#2ac769" }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+      funnelChart = new Chart(document.getElementById("funnelChart"), {
+        type: "line",
+        data: { labels: ["Трафик","Лиды","Квал. лиды","Показы","Брони","Договоры"], datasets: [
+          { label: "Воронка", data: [funnel.traffic, funnel.leads, funnel.qualified, funnel.shows, funnel.bookings, funnel.deals], borderColor: "#ffb020", tension: 0.2 }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    function vkStatus(row) {
+      if (row.romi >= 3 && row.leads >= 20) return "Масштабировать";
+      if (row.romi >= 2) return "Оставить";
+      if (row.romi >= 1.3) return "Перезапустить";
+      return "Остановить";
+    }
+
+    function getVkFiltered() {
+      const month = document.getElementById("vkMonth").value;
+      const sort = document.getElementById("vkSort").value;
+      let rows = [...vkPosts];
+      if (month !== "all") rows = rows.filter(r => r.date.startsWith(month));
+      rows.sort((a, b) => Number(b[sort]) - Number(a[sort]));
+      return rows;
+    }
+
+    function renderVk(rows) {
+      const leads = rows.reduce((s, r) => s + r.leads, 0);
+      const deals = rows.reduce((s, r) => s + r.deals, 0);
+      const ctr = rows.length ? rows.reduce((s, r) => s + r.ctr, 0) / rows.length : 0;
+      const er = rows.length ? rows.reduce((s, r) => s + r.er, 0) / rows.length : 0;
+      const romi = rows.length ? rows.reduce((s, r) => s + r.romi, 0) / rows.length : 0;
+
+      document.getElementById("vkKpis").innerHTML = `
+        <div class="card"><div class="kpi-title">Лиды VK</div><div class="kpi-value">${leads}</div></div>
+        <div class="card"><div class="kpi-title">Договоры VK</div><div class="kpi-value">${deals}</div></div>
+        <div class="card"><div class="kpi-title">Средний CTR</div><div class="kpi-value">${pct(ctr)}</div></div>
+        <div class="card"><div class="kpi-title">Средний ER</div><div class="kpi-value">${pct(er)}</div></div>
+        <div class="card"><div class="kpi-title">Средний ROMI</div><div class="kpi-value">${romi.toFixed(2)}</div></div>
+      `;
+
+      const body = document.getElementById("vkTable");
+      body.innerHTML = "";
+      for (const r of rows) {
+        body.insertAdjacentHTML("beforeend", `<tr>
+          <td>${r.date}</td><td>${r.topic}</td><td>${r.format}</td><td>${new Intl.NumberFormat("ru-RU").format(r.reach)}</td>
+          <td>${pct(r.er)}</td><td>${pct(r.ctr)}</td><td>${r.clicks}</td><td>${r.leads}</td><td>${money(r.cpl)}</td>
+          <td>${r.shows}</td><td>${r.bookings}</td><td>${r.deals}</td><td>${Number(r.romi).toFixed(2)}</td><td>${vkStatus(r)}</td>
+        </tr>`);
+      }
+
+      if (vkLeadsChart) vkLeadsChart.destroy();
+      if (vkRateChart) vkRateChart.destroy();
+      const top = rows.slice(0, 6);
+      vkLeadsChart = new Chart(document.getElementById("vkLeadsChart"), {
+        type: "bar",
+        data: { labels: top.map(x => x.topic), datasets: [
+          { label: "Лиды", data: top.map(x => x.leads), backgroundColor: "#4d8dff" },
+          { label: "Договоры", data: top.map(x => x.deals), backgroundColor: "#2ac769" }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+      vkRateChart = new Chart(document.getElementById("vkRateChart"), {
+        type: "line",
+        data: { labels: top.map(x => x.topic), datasets: [
+          { label: "ER%", data: top.map(x => x.er), borderColor: "#ffb020", tension: 0.2 },
+          { label: "CTR%", data: top.map(x => x.ctr), borderColor: "#ff5d5d", tension: 0.2 }
+        ]},
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+    }
+
+    async function refreshAll() {
+      try {
+        await loadData();
+        renderKpis();
+        renderChannelsTable();
+        renderCharts();
+        renderVk(getVkFiltered());
+      } catch (e) {
+        document.getElementById("updatedAt").textContent = `Ошибка: ${e.message}`;
+      }
+    }
+
+    function initTabs() {
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.tab).classList.add("active");
+        });
+      });
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", refreshAll);
+    document.getElementById("refreshVkBtn").addEventListener("click", refreshAll);
+    document.getElementById("vkMonth").addEventListener("change", () => renderVk(getVkFiltered()));
+    document.getElementById("vkSort").addEventListener("change", () => renderVk(getVkFiltered()));
+    initTabs();
+    refreshAll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+{
+  "updated_at": "2026-04-26T17:21:02.309970+00:00",
+  "channels": [
+    {
+      "name": "Сайт",
+      "traffic": 520,
+      "leads": 12,
+      "cpl": 1500.0,
+      "shows": 3,
+      "bookings": 1,
+      "deals": 0,
+      "cac": 0,
+      "romi": -1.0
+    },
+    {
+      "name": "Telegram",
+      "traffic": 230,
+      "leads": 6,
+      "cpl": 1233.33,
+      "shows": 2,
+      "bookings": 1,
+      "deals": 0,
+      "cac": 0,
+      "romi": -1.0
+    },
+    {
+      "name": "VK",
+      "traffic": 380,
+      "leads": 9,
+      "cpl": 1333.33,
+      "shows": 3,
+      "bookings": 1,
+      "deals": 0,
+      "cac": 0,
+      "romi": -1.0
+    }
+  ],
+  "funnel": {
+    "traffic": 1130,
+    "leads": 27,
+    "qualified": 15,
+    "shows": 8,
+    "bookings": 3,
+    "deals": 0
+  },
+  "vk_posts": [
+    {
+      "date": "2026-04-24",
+      "topic": "Разбор ипотеки",
+      "format": "Видео",
+      "reach": 7933,
+      "er": 8.49,
+      "ctr": 6.4,
+      "clicks": 508,
+      "leads": 63,
+      "cpl": 536.51,
+      "shows": 24,
+      "bookings": 8,
+      "deals": 4,
+      "romi": 2.73
+    },
+    {
+      "date": "2026-04-21",
+      "topic": "Свободные участки",
+      "format": "Карусель",
+      "reach": 7317,
+      "er": 7.76,
+      "ctr": 8.25,
+      "clicks": 604,
+      "leads": 67,
+      "cpl": 526.57,
+      "shows": 27,
+      "bookings": 11,
+      "deals": 4,
+      "romi": 3.2
+    },
+    {
+      "date": "2026-04-18",
+      "topic": "Ход строительства",
+      "format": "Фото",
+      "reach": 6085,
+      "er": 6.51,
+      "ctr": 2.39,
+      "clicks": 138,
+      "leads": 13,
+      "cpl": 1376,
+      "shows": 6,
+      "bookings": 2,
+      "deals": 1,
+      "romi": 1.92
+    },
+    {
+      "date": "2026-04-15",
+      "topic": "Кейс семьи",
+      "format": "Текст+Фото",
+      "reach": 6628,
+      "er": 6.92,
+      "ctr": 2.61,
+      "clicks": 164,
+      "leads": 20,
+      "cpl": 1270,
+      "shows": 8,
+      "bookings": 3,
+      "deals": 1,
+      "romi": 2.95
+    },
+    {
+      "date": "2026-03-29",
+      "topic": "Дом vs квартира",
+      "format": "Видео",
+      "reach": 6357,
+      "er": 9.46,
+      "ctr": 2.92,
+      "clicks": 200,
+      "leads": 23,
+      "cpl": 1172,
+      "shows": 10,
+      "bookings": 3,
+      "deals": 1,
+      "romi": 2.81
+    },
+    {
+      "date": "2026-03-23",
+      "topic": "Акция месяца",
+      "format": "Пост",
+      "reach": 4773,
+      "er": 5.85,
+      "ctr": 1.68,
+      "clicks": 111,
+      "leads": 10,
+      "cpl": 1832,
+      "shows": 4,
+      "bookings": 1,
+      "deals": 0,
+      "romi": 0.95
+    }
+  ]
+}

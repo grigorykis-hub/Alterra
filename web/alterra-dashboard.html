@@ -3,390 +3,627 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alterra Dashboard</title>
+  <title>Alterra Cottage — Дашборд маркетинга и продаж</title>
   <style>
     :root {
-      --bg: #0b1220;
-      --panel: #121b30;
-      --line: #253556;
-      --text: #e8efff;
-      --muted: #9cb0d5;
-      --accent: #4d8dff;
-      --ok: #2ac769;
-      --warn: #ffb020;
-      --bad: #ff5d5d;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --line: #e3e8f1;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-2: #0ea5e9;
+      --ok: #16a34a;
+      --warn: #f59e0b;
+      --bad: #dc2626;
     }
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Inter, Arial, sans-serif;
-      background: radial-gradient(circle at top, #13203a, var(--bg));
+      background: var(--bg);
       color: var(--text);
     }
     .container {
-      max-width: 1300px;
+      max-width: 1240px;
       margin: 0 auto;
-      padding: 18px;
+      padding: 20px;
     }
-    .hero {
-      background: linear-gradient(135deg, #1f3f7c, #2b5aaa);
-      border: 1px solid #4f72b5;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      gap: 10px;
+      flex-wrap: wrap;
     }
-    .hero h1 { margin: 0 0 6px; font-size: 28px; }
-    .hero p { margin: 0; color: #d9e7ff; }
-    .small { color: #d9e7ff; font-size: 12px; margin-top: 6px; }
-    .tabs { display: flex; gap: 8px; margin: 10px 0 14px; }
-    .tab-btn {
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .brand-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .brand-subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .pill {
+      display: inline-block;
       border: 1px solid var(--line);
-      background: var(--panel);
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      border: 1px solid var(--line);
+      background: #fff;
       color: var(--text);
       border-radius: 10px;
       padding: 10px 14px;
       cursor: pointer;
       font-weight: 600;
     }
-    .tab-btn.active { background: var(--accent); border-color: var(--accent); }
-    .tab { display: none; }
-    .tab.active { display: block; }
-    .kpis {
-      display: grid;
-      gap: 10px;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      margin-bottom: 12px;
+    .nav-btn.active {
+      border-color: var(--accent);
+      background: #eff6ff;
+      color: #1d4ed8;
     }
+    .section { display: none; }
+    .section.active { display: block; }
     .card {
-      background: var(--panel);
+      background: var(--card);
       border: 1px solid var(--line);
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .card h2, .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+    .subtle {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 10px;
+    }
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 12px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn.secondary {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: #1d4ed8;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
     }
     .kpi-title { color: var(--muted); font-size: 12px; }
-    .kpi-value { font-size: 24px; font-weight: 700; margin: 4px 0; }
-    .kpi-note { font-size: 12px; color: var(--muted); }
-    .ok { color: var(--ok); }
-    .warn { color: var(--warn); }
-    .bad { color: var(--bad); }
+    .kpi-value { font-size: 24px; font-weight: 700; margin-top: 3px; }
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-bottom: 12px;
     }
-    @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { border-bottom: 1px solid var(--line); padding: 7px 6px; text-align: left; }
-    th { color: var(--muted); font-weight: 600; }
-    .scroll { overflow: auto; }
-    .filters {
+    .list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 8px;
     }
-    select, button {
-      width: 100%;
+    .list li {
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: #1a2741;
-      color: var(--text);
-      padding: 9px 10px;
+      padding: 10px;
+      background: #fff;
     }
-    button { cursor: pointer; background: #24467f; }
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    .bad { color: var(--bad); }
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 920px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 8px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      background: #f8fafc;
+      position: sticky;
+      top: 0;
+    }
+    .hint {
+      position: relative;
+      cursor: help;
+      border-bottom: 1px dashed #9ca3af;
+      color: #374151;
+    }
+    .hint:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      left: 0;
+      top: 125%;
+      z-index: 50;
+      width: 260px;
+      white-space: normal;
+      background: #111827;
+      color: #f9fafb;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      line-height: 1.4;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    }
+    .upload-box {
+      border: 2px dashed #bfdbfe;
+      border-radius: 12px;
+      padding: 14px;
+      background: #eff6ff;
+      color: #1e3a8a;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .checklist {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 6px;
+      color: var(--text);
+    }
+    .filters-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    select {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      color: var(--text);
+    }
+    @media (max-width: 950px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="hero">
-      <h1>Alterra Dashboard</h1>
-      <p>Сквозные KPI каналов + аналитика постов VK</p>
-      <div id="updatedAt" class="small">Последнее обновление: загрузка...</div>
-    </div>
-
-    <div class="tabs">
-      <button class="tab-btn active" data-tab="overview">Каналы</button>
-      <button class="tab-btn" data-tab="vk">Посты VK</button>
-    </div>
-
-    <section id="overview" class="tab active">
-      <div class="filters">
-        <div class="card">
-          <div class="kpi-title">Период</div>
-          <select>
-            <option>Текущий месяц</option>
-            <option>Квартал</option>
-            <option>90 дней</option>
-          </select>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-wrap">
+          <span>Alterra Cottage</span>
+          <span class="brand-subtitle">Дашборд маркетинга и продаж</span>
         </div>
-        <div class="card">
-          <div class="kpi-title">Данные</div>
-          <button id="refreshBtn">Обновить</button>
-        </div>
+        <span class="badge">Саранск</span>
       </div>
+      <div id="updatedAt" class="pill">Обновление: загрузка...</div>
+    </div>
 
-      <div id="kpis" class="kpis"></div>
+    <div class="nav">
+      <button class="nav-btn active" data-section="home">Главная</button>
+      <button class="nav-btn" data-section="smm">SMM</button>
+      <button class="nav-btn" data-section="events">Мероприятия</button>
+      <button class="nav-btn" data-section="vkads">Таргет VK</button>
+      <button class="nav-btn" data-section="tasks">Задачи</button>
+    </div>
 
+    <section id="home" class="section active">
+      <div class="card">
+        <h2>Главная</h2>
+        <div class="subtle">Оперативная сводка по маркетингу и продажам (без блока «Трафик и выручка»).</div>
+        <div id="homeKpis" class="kpis"></div>
+      </div>
+      <div class="card">
+        <h3>Подписчики</h3>
+        <div id="homeSubscribers" class="kpis"></div>
+      </div>
       <div class="grid-2">
         <div class="card">
-          <h3>Лиды и договоры по каналам</h3>
-          <canvas id="channelsChart" height="220"></canvas>
+          <h3>Ближайшие задачи</h3>
+          <ul id="homeTasks" class="list"></ul>
         </div>
         <div class="card">
-          <h3>Воронка</h3>
-          <canvas id="funnelChart" height="220"></canvas>
+          <h3>Ближайшие мероприятия</h3>
+          <ul id="homeEvents" class="list"></ul>
         </div>
-      </div>
-
-      <div class="card scroll">
-        <h3>Таблица каналов</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Канал</th><th>Трафик</th><th>Лиды</th><th>CPL</th><th>Показы</th>
-              <th>Брони</th><th>Договоры</th><th>CAC</th><th>ROMI</th>
-            </tr>
-          </thead>
-          <tbody id="channelsTable"></tbody>
-        </table>
       </div>
     </section>
 
-    <section id="vk" class="tab">
-      <div class="filters">
-        <div class="card">
-          <div class="kpi-title">Месяц</div>
-          <select id="vkMonth">
-            <option value="all">Все</option>
-            <option value="2026-04" selected>2026-04</option>
-            <option value="2026-03">2026-03</option>
-          </select>
-        </div>
-        <div class="card">
-          <div class="kpi-title">Сортировка</div>
-          <select id="vkSort">
-            <option value="romi">По ROMI</option>
-            <option value="leads">По лидам</option>
-            <option value="ctr">По CTR</option>
-          </select>
-        </div>
-        <div class="card">
-          <div class="kpi-title">Данные</div>
-          <button id="refreshVkBtn">Обновить VK</button>
+    <section id="smm" class="section">
+      <div class="card">
+        <h2>SMM</h2>
+        <button class="btn secondary" type="button">Добавить пост</button>
+      </div>
+      <div class="card">
+        <h3>Журнал публикаций</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Платформа</th>
+                <th>Тип</th>
+                <th>Тема</th>
+                <th>Охват</th>
+                <th>Лайки</th>
+                <th>Комм.</th>
+                <th>Репосты</th>
+              </tr>
+            </thead>
+            <tbody id="smmTable"></tbody>
+          </table>
         </div>
       </div>
+    </section>
 
-      <div id="vkKpis" class="kpis"></div>
-
-      <div class="grid-2">
-        <div class="card">
-          <h3>Лиды/договоры по постам</h3>
-          <canvas id="vkLeadsChart" height="220"></canvas>
-        </div>
-        <div class="card">
-          <h3>ER и CTR</h3>
-          <canvas id="vkRateChart" height="220"></canvas>
+    <section id="events" class="section">
+      <div class="card">
+        <h2>Мероприятия</h2>
+        <button class="btn secondary" type="button">Добавить</button>
+      </div>
+      <div class="card">
+        <h3>План мероприятий</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Дата</th>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Статус</th>
+                <th>Ответственный</th>
+                <th>Бюджет</th>
+              </tr>
+            </thead>
+            <tbody id="eventsTable"></tbody>
+          </table>
         </div>
       </div>
+    </section>
 
-      <div class="card scroll">
-        <h3>Показатели постов VK</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Дата</th><th>Тема</th><th>Формат</th><th>Охват</th><th>ER%</th><th>CTR%</th>
-              <th>Клики</th><th>Лиды</th><th>CPL</th><th>Показы</th><th>Брони</th><th>Договоры</th><th>ROMI</th><th>Статус</th>
-            </tr>
-          </thead>
-          <tbody id="vkTable"></tbody>
-        </table>
+    <section id="vkads" class="section">
+      <div class="card">
+        <h2>Таргетированная реклама VK</h2>
+        <div class="upload-box">
+          Загрузить отчет VK Рекламы (.xlsx)<br />
+          <span class="subtle">Скачайте отчет из ads.vk.com и загрузите сюда</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>История объявлений</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Объявление</th>
+                <th>Период</th>
+                <th><span class="hint" data-tip="Охват — уникальные пользователи, увидевшие рекламу. Рекомендация: растить охват без резкого падения CTR.">Охват</span></th>
+                <th><span class="hint" data-tip="Частота — сколько раз в среднем один человек видел объявление. Норма: 2-4, выше 5 обычно ведет к выгоранию креатива.">Частота</span></th>
+                <th><span class="hint" data-tip="CTR — кликабельность. Для локального девелопмента ориентир: от 1.5% хорошо, от 2.5% отлично.">CTR</span></th>
+                <th><span class="hint" data-tip="CPC — стоимость клика. Цель: снижать при сохранении качества лидов. Если CPC растет >20% неделя к неделе, обновляйте креатив и аудиторию.">CPC</span></th>
+                <th><span class="hint" data-tip="CPF — стоимость подписчика. Контролируйте планку по юнит-экономике, ориентир: в пределах установленного медиаплана.">CPF</span></th>
+                <th><span class="hint" data-tip="Бюджет — фактические расходы на объявление/период. Масштабируйте только объявления с лучшим ROMI.">Бюджет</span></th>
+                <th><span class="hint" data-tip="Новые подписчики — приток аудитории из рекламы. Сверяйте с качеством лидов и вовлечением, а не только с количеством.">Новых подписчиков</span></th>
+              </tr>
+            </thead>
+            <tbody id="vkAdsTable"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Еженедельный чек-лист</h3>
+        <ul class="checklist">
+          <li>Сравнить CTR недели к неделе.</li>
+          <li>Проверить частоту показов (цель: до 3-4).</li>
+          <li>Сопоставить стоимость подписчика с планом.</li>
+          <li>Отключить объявление с худшим ROMI.</li>
+          <li>Увеличить бюджет победителя на 20%.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="tasks" class="section">
+      <div class="card">
+        <h2>Задачи</h2>
+        <div class="filters-row">
+          <button class="btn secondary" type="button">Новая задача</button>
+          <select id="taskStatusFilter">
+            <option value="all">Все статусы</option>
+            <option value="new">Новая</option>
+            <option value="in_progress">В работе</option>
+            <option value="done">Выполнена</option>
+            <option value="overdue">Просрочена</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Название</th>
+                <th>Исполнитель</th>
+                <th>Дедлайн</th>
+                <th>Приоритет</th>
+                <th>Статус</th>
+              </tr>
+            </thead>
+            <tbody id="tasksTable"></tbody>
+          </table>
+        </div>
       </div>
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    let channels = [];
-    let funnel = { traffic: 0, leads: 0, qualified: 0, shows: 0, bookings: 0, deals: 0 };
-    let vkPosts = [];
-    let channelsChart;
-    let funnelChart;
-    let vkLeadsChart;
-    let vkRateChart;
+    let metrics = null;
 
-    function money(v) {
-      return new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(v);
+    function fmtNumber(value) {
+      return new Intl.NumberFormat("ru-RU").format(Number(value || 0));
     }
-    function pct(v) { return `${Number(v).toFixed(1)}%`; }
 
-    async function loadData() {
-      const res = await fetch(`/web/data/alterra_metrics.json?v=${Date.now()}`);
-      if (!res.ok) throw new Error("Файл метрик недоступен");
-      const data = await res.json();
-      channels = data.channels || [];
-      funnel = data.funnel || funnel;
-      vkPosts = data.vk_posts || [];
+    function fmtMoney(value) {
+      return new Intl.NumberFormat("ru-RU", {
+        style: "currency",
+        currency: "RUB",
+        maximumFractionDigits: 0
+      }).format(Number(value || 0));
+    }
+
+    function statusLabel(status) {
+      if (status === "new") return "Новая";
+      if (status === "in_progress") return "В работе";
+      if (status === "done") return "Выполнена";
+      if (status === "overdue") return "Просрочена";
+      return status;
+    }
+
+    function statusClass(status) {
+      if (status === "done") return "ok";
+      if (status === "overdue") return "bad";
+      if (status === "in_progress") return "warn";
+      return "";
+    }
+
+    async function loadMetrics() {
+      const response = await fetch(`/web/data/alterra_metrics.json?v=${Date.now()}`);
+      if (!response.ok) throw new Error("Не удалось загрузить alterra_metrics.json");
+      metrics = await response.json();
       document.getElementById("updatedAt").textContent =
-        `Последнее обновление: ${new Date(data.updated_at).toLocaleString("ru-RU")}`;
+        `Обновление: ${new Date(metrics.updated_at).toLocaleString("ru-RU")}`;
     }
 
-    function status(actual, plan) {
-      if (actual >= plan) return ["ok", "В плане"];
-      if (actual >= plan * 0.9) return ["warn", "Рядом с планом"];
-      return ["bad", "Ниже плана"];
-    }
-
-    function renderKpis() {
-      const leads = channels.reduce((s, c) => s + c.leads, 0);
-      const deals = channels.reduce((s, c) => s + c.deals, 0);
-      const avgCpl = channels.reduce((s, c) => s + c.cpl, 0) / channels.length;
-      const avgRomi = channels.reduce((s, c) => s + c.romi, 0) / channels.length;
-      const conv = leads ? (deals / leads) * 100 : 0;
+    function renderHome() {
+      const channels = metrics.channels || [];
+      const funnel = metrics.funnel || {};
+      const vkPosts = metrics.vk_posts || [];
+      const tasksSeed = metrics.tasks || [];
+      const eventsSeed = metrics.events || [];
+      const avgCpl = channels.length
+        ? channels.reduce((sum, item) => sum + Number(item.cpl || 0), 0) / channels.length
+        : 0;
+      const avgRomi = channels.length
+        ? channels.reduce((sum, item) => sum + Number(item.romi || 0), 0) / channels.length
+        : 0;
       const kpis = [
-        ["Лиды", leads, 600, "num"],
-        ["Договоры", deals, 24, "num"],
-        ["Средний CPL", avgCpl, 1400, "rev"],
-        ["Средний ROMI", avgRomi, 2.8, "float"],
-        ["CR лид->договор", conv, 4.2, "pct"]
+        ["Лиды", fmtNumber(funnel.leads)],
+        ["Показы", fmtNumber(funnel.shows)],
+        ["Брони", fmtNumber(funnel.bookings)],
+        ["Договоры", fmtNumber(funnel.deals)],
+        ["Средний CPL", fmtMoney(avgCpl)],
+        ["Средний ROMI", avgRomi.toFixed(2)]
       ];
-      const box = document.getElementById("kpis");
-      box.innerHTML = "";
-      for (const [title, value, plan, type] of kpis) {
-        const [cls, note] = type === "rev" ? status(plan, value) : status(value, plan);
-        let text = value;
-        if (type === "num") text = new Intl.NumberFormat("ru-RU").format(value);
-        if (type === "rev") text = money(value);
-        if (type === "float") text = Number(value).toFixed(2);
-        if (type === "pct") text = pct(value);
-        const planText = type === "rev" ? money(plan) : (type === "pct" ? pct(plan) : plan);
-        box.insertAdjacentHTML("beforeend",
-          `<div class="card"><div class="kpi-title">${title}</div><div class="kpi-value">${text}</div><div class="kpi-note ${cls}">${note} | План: ${planText}</div></div>`);
-      }
+      document.getElementById("homeKpis").innerHTML = kpis
+        .map(([title, value]) => `<div class="kpi"><div class="kpi-title">${title}</div><div class="kpi-value">${value}</div></div>`)
+        .join("");
+
+      const subscribersData = metrics.subscribers || {};
+
+      const vkSubscribers = Number.isFinite(Number(subscribersData.vk_total))
+        ? Number(subscribersData.vk_total)
+        : null;
+      const tgSubscribers = Number.isFinite(Number(subscribersData.tg_total))
+        ? Number(subscribersData.tg_total)
+        : null;
+      const vkGrowth = Number.isFinite(Number(subscribersData.vk_growth_30d))
+        ? Number(subscribersData.vk_growth_30d)
+        : null;
+      const tgGrowth = Number.isFinite(Number(subscribersData.tg_growth_30d))
+        ? Number(subscribersData.tg_growth_30d)
+        : null;
+
+      const subscriberKpis = [
+        ["Подписчики ВКонтакте", vkSubscribers === null ? "—" : fmtNumber(vkSubscribers), vkGrowth === null ? "Нет реальных данных за 30 дней" : `+${fmtNumber(vkGrowth)} за 30 дней`],
+        ["Подписчики Telegram", tgSubscribers === null ? "—" : fmtNumber(tgSubscribers), tgGrowth === null ? "Нет реальных данных за 30 дней" : `+${fmtNumber(tgGrowth)} за 30 дней`]
+      ];
+      document.getElementById("homeSubscribers").innerHTML = subscriberKpis
+        .map(([title, value, delta]) => `<div class="kpi"><div class="kpi-title">${title}</div><div class="kpi-value">${value}</div><div class="subtle">${delta}</div></div>`)
+        .join("");
+
+      const tasksHtml = tasksSeed
+        .slice(0, 3)
+        .map((task) => `<li><strong>${task.title}</strong><br><span class="subtle">${task.owner || "-"} · ${task.deadline || "-"}</span></li>`)
+        .join("");
+      document.getElementById("homeTasks").innerHTML = tasksHtml || "<li><span class='subtle'>Нет реальных данных по задачам</span></li>";
+
+      const eventsHtml = eventsSeed
+        .map((event) => `<li><strong>${event.name}</strong><br><span class="subtle">${event.date || "-"} · ${event.type || "-"}</span></li>`)
+        .join("");
+      document.getElementById("homeEvents").innerHTML = eventsHtml || "<li><span class='subtle'>Нет реальных данных по мероприятиям</span></li>";
     }
 
-    function renderChannelsTable() {
-      const body = document.getElementById("channelsTable");
-      body.innerHTML = "";
-      for (const c of channels) {
-        body.insertAdjacentHTML("beforeend", `<tr>
-          <td>${c.name}</td><td>${new Intl.NumberFormat("ru-RU").format(c.traffic)}</td><td>${c.leads}</td><td>${money(c.cpl)}</td>
-          <td>${c.shows}</td><td>${c.bookings}</td><td>${c.deals}</td><td>${money(c.cac)}</td><td>${Number(c.romi).toFixed(2)}</td>
-        </tr>`);
-      }
-    }
-
-    function renderCharts() {
-      if (channelsChart) channelsChart.destroy();
-      if (funnelChart) funnelChart.destroy();
-      channelsChart = new Chart(document.getElementById("channelsChart"), {
-        type: "bar",
-        data: { labels: channels.map(x => x.name), datasets: [
-          { label: "Лиды", data: channels.map(x => x.leads), backgroundColor: "#4d8dff" },
-          { label: "Договоры", data: channels.map(x => x.deals), backgroundColor: "#2ac769" }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false }
+    function renderSmm() {
+      const rows = (metrics.vk_posts || []).map((post) => {
+        const likes = Number(post.likes || 0);
+        const comments = Number(post.comments || 0);
+        const reposts = Number(post.reposts || 0);
+        return `
+          <tr>
+            <td>${post.date}</td>
+            <td>ВКонтакте</td>
+            <td>${post.format || "Пост"}</td>
+            <td>${post.topic || "-"}</td>
+            <td>${fmtNumber(post.reach)}</td>
+            <td>${fmtNumber(likes)}</td>
+            <td>${fmtNumber(comments)}</td>
+            <td>${fmtNumber(reposts)}</td>
+          </tr>
+        `;
       });
-      funnelChart = new Chart(document.getElementById("funnelChart"), {
-        type: "line",
-        data: { labels: ["Трафик","Лиды","Квал. лиды","Показы","Брони","Договоры"], datasets: [
-          { label: "Воронка", data: [funnel.traffic, funnel.leads, funnel.qualified, funnel.shows, funnel.bookings, funnel.deals], borderColor: "#ffb020", tension: 0.2 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false }
+      document.getElementById("smmTable").innerHTML = rows.join("") || `<tr><td colspan="8" class="subtle">Нет реальных данных по SMM</td></tr>`;
+    }
+
+    function renderEvents() {
+      const eventsSeed = metrics.events || [];
+      const eventsHtml = eventsSeed
+        .map(
+          (event) => `
+            <tr>
+              <td>${event.date}</td>
+              <td>${event.name}</td>
+              <td>${event.type}</td>
+              <td>${event.status}</td>
+              <td>${event.owner}</td>
+              <td>${fmtMoney(event.budget)}</td>
+            </tr>
+          `
+        )
+        .join("");
+      document.getElementById("eventsTable").innerHTML = eventsHtml || `<tr><td colspan="6" class="subtle">Нет реальных данных по мероприятиям</td></tr>`;
+    }
+
+    function renderVkAds() {
+      const rows = (metrics.vk_posts || []).map((post) => {
+        const leads = Number(post.leads || 0);
+        const clicks = Number(post.clicks || 0);
+        const cpl = Number(post.cpl || 0);
+        const budget = cpl * leads;
+        const cpc = clicks > 0 ? budget / clicks : 0;
+        const cpf = leads > 0 ? budget / leads : 0;
+        const subscribers = Number(post.subscribers || 0);
+        const frequency = Number(post.frequency || 0);
+        const cpcReal = Number(post.cpc || 0);
+        const cpfReal = Number(post.cpf || 0);
+        const budgetReal = Number(post.budget || budget);
+        return `
+          <tr>
+            <td>${post.topic || "Объявление VK"}</td>
+            <td>${post.date}</td>
+            <td>${fmtNumber(post.reach)}</td>
+            <td>${frequency > 0 ? frequency.toFixed(2) : "—"}</td>
+            <td>${Number(post.ctr || 0).toFixed(2)}%</td>
+            <td>${cpcReal > 0 ? fmtMoney(cpcReal) : (cpc > 0 ? fmtMoney(cpc) : "—")}</td>
+            <td>${cpfReal > 0 ? fmtMoney(cpfReal) : (cpf > 0 ? fmtMoney(cpf) : "—")}</td>
+            <td>${budgetReal > 0 ? fmtMoney(budgetReal) : "—"}</td>
+            <td>${fmtNumber(subscribers)}</td>
+          </tr>
+        `;
       });
+      document.getElementById("vkAdsTable").innerHTML = rows.join("") || `<tr><td colspan="9" class="subtle">Нет реальных данных по таргету VK</td></tr>`;
     }
 
-    function vkStatus(row) {
-      if (row.romi >= 3 && row.leads >= 20) return "Масштабировать";
-      if (row.romi >= 2) return "Оставить";
-      if (row.romi >= 1.3) return "Перезапустить";
-      return "Остановить";
+    function renderTasks() {
+      const tasksSeed = metrics.tasks || [];
+      const filter = document.getElementById("taskStatusFilter").value;
+      const rows = tasksSeed
+        .filter((task) => filter === "all" || task.status === filter)
+        .map(
+          (task) => `
+            <tr>
+              <td>${task.title}</td>
+              <td>${task.owner}</td>
+              <td>${task.deadline}</td>
+              <td>${task.priority}</td>
+              <td class="${statusClass(task.status)}">${statusLabel(task.status)}</td>
+            </tr>
+          `
+        )
+        .join("");
+      document.getElementById("tasksTable").innerHTML = rows || `<tr><td colspan="5" class="subtle">Нет реальных данных по задачам</td></tr>`;
     }
 
-    function getVkFiltered() {
-      const month = document.getElementById("vkMonth").value;
-      const sort = document.getElementById("vkSort").value;
-      let rows = [...vkPosts];
-      if (month !== "all") rows = rows.filter(r => r.date.startsWith(month));
-      rows.sort((a, b) => Number(b[sort]) - Number(a[sort]));
-      return rows;
-    }
-
-    function renderVk(rows) {
-      const leads = rows.reduce((s, r) => s + r.leads, 0);
-      const deals = rows.reduce((s, r) => s + r.deals, 0);
-      const ctr = rows.length ? rows.reduce((s, r) => s + r.ctr, 0) / rows.length : 0;
-      const er = rows.length ? rows.reduce((s, r) => s + r.er, 0) / rows.length : 0;
-      const romi = rows.length ? rows.reduce((s, r) => s + r.romi, 0) / rows.length : 0;
-
-      document.getElementById("vkKpis").innerHTML = `
-        <div class="card"><div class="kpi-title">Лиды VK</div><div class="kpi-value">${leads}</div></div>
-        <div class="card"><div class="kpi-title">Договоры VK</div><div class="kpi-value">${deals}</div></div>
-        <div class="card"><div class="kpi-title">Средний CTR</div><div class="kpi-value">${pct(ctr)}</div></div>
-        <div class="card"><div class="kpi-title">Средний ER</div><div class="kpi-value">${pct(er)}</div></div>
-        <div class="card"><div class="kpi-title">Средний ROMI</div><div class="kpi-value">${romi.toFixed(2)}</div></div>
-      `;
-
-      const body = document.getElementById("vkTable");
-      body.innerHTML = "";
-      for (const r of rows) {
-        body.insertAdjacentHTML("beforeend", `<tr>
-          <td>${r.date}</td><td>${r.topic}</td><td>${r.format}</td><td>${new Intl.NumberFormat("ru-RU").format(r.reach)}</td>
-          <td>${pct(r.er)}</td><td>${pct(r.ctr)}</td><td>${r.clicks}</td><td>${r.leads}</td><td>${money(r.cpl)}</td>
-          <td>${r.shows}</td><td>${r.bookings}</td><td>${r.deals}</td><td>${Number(r.romi).toFixed(2)}</td><td>${vkStatus(r)}</td>
-        </tr>`);
-      }
-
-      if (vkLeadsChart) vkLeadsChart.destroy();
-      if (vkRateChart) vkRateChart.destroy();
-      const top = rows.slice(0, 6);
-      vkLeadsChart = new Chart(document.getElementById("vkLeadsChart"), {
-        type: "bar",
-        data: { labels: top.map(x => x.topic), datasets: [
-          { label: "Лиды", data: top.map(x => x.leads), backgroundColor: "#4d8dff" },
-          { label: "Договоры", data: top.map(x => x.deals), backgroundColor: "#2ac769" }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-      vkRateChart = new Chart(document.getElementById("vkRateChart"), {
-        type: "line",
-        data: { labels: top.map(x => x.topic), datasets: [
-          { label: "ER%", data: top.map(x => x.er), borderColor: "#ffb020", tension: 0.2 },
-          { label: "CTR%", data: top.map(x => x.ctr), borderColor: "#ff5d5d", tension: 0.2 }
-        ]},
-        options: { responsive: true, maintainAspectRatio: false }
-      });
-    }
-
-    async function refreshAll() {
-      try {
-        await loadData();
-        renderKpis();
-        renderChannelsTable();
-        renderCharts();
-        renderVk(getVkFiltered());
-      } catch (e) {
-        document.getElementById("updatedAt").textContent = `Ошибка: ${e.message}`;
-      }
-    }
-
-    function initTabs() {
-      document.querySelectorAll(".tab-btn").forEach((btn) => {
+    function initNavigation() {
+      document.querySelectorAll(".nav-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-          document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
-          document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+          document.querySelectorAll(".nav-btn").forEach((item) => item.classList.remove("active"));
+          document.querySelectorAll(".section").forEach((section) => section.classList.remove("active"));
           btn.classList.add("active");
-          document.getElementById(btn.dataset.tab).classList.add("active");
+          const target = btn.getAttribute("data-section");
+          document.getElementById(target).classList.add("active");
         });
       });
     }
 
-    document.getElementById("refreshBtn").addEventListener("click", refreshAll);
-    document.getElementById("refreshVkBtn").addEventListener("click", refreshAll);
-    document.getElementById("vkMonth").addEventListener("change", () => renderVk(getVkFiltered()));
-    document.getElementById("vkSort").addEventListener("change", () => renderVk(getVkFiltered()));
-    initTabs();
-    refreshAll();
+    async function init() {
+      await loadMetrics();
+      renderHome();
+      renderSmm();
+      renderEvents();
+      renderVkAds();
+      renderTasks();
+      initNavigation();
+      document.getElementById("taskStatusFilter").addEventListener("change", renderTasks);
+    }
+
+    init().catch((error) => {
+      document.getElementById("updatedAt").textContent = `Ошибка: ${error.message}`;
+    });
   </script>
 </body>
 </html>

@@ -1,42 +1,42 @@
 {
-  "updated_at": "2026-04-27T14:15:52.062183+00:00",
+  "updated_at": "2026-04-28T10:33:58.200924+00:00",
   "channels": [
     {
       "name": "Сайт",
-      "traffic": 483,
+      "traffic": 521,
       "leads": 13,
-      "cpl": 1522,
+      "cpl": 1494,
       "shows": 3,
       "bookings": 1,
       "deals": 0,
       "cac": 0,
-      "romi": -1.08
+      "romi": -0.95
     },
     {
       "name": "Telegram",
-      "traffic": 215,
+      "traffic": 210,
       "leads": 6,
-      "cpl": 1170,
+      "cpl": 1077,
       "shows": 2,
       "bookings": 1,
       "deals": 0,
       "cac": 0,
-      "romi": -1.08
+      "romi": -1.01
     },
     {
       "name": "VK",
-      "traffic": 375,
+      "traffic": 398,
       "leads": 8,
-      "cpl": 1326,
+      "cpl": 1420,
       "shows": 3,
       "bookings": 1,
       "deals": 0,
       "cac": 0,
-      "romi": -0.99
+      "romi": -1.05
     }
   ],
   "funnel": {
-    "traffic": 1073,
+    "traffic": 1129,
     "leads": 27,
     "qualified": 15,
     "shows": 8,

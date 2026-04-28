@@ -676,20 +676,34 @@
       });
     }
 
-    async function init() {
-      await loadMetrics();
+    function renderAllSections() {
       renderHome();
       renderSmm();
       renderEvents();
       renderVkAds();
       renderTasks();
+    }
+
+    async function init() {
       initVkAdsUpload();
       initNavigation();
       document.getElementById("taskStatusFilter").addEventListener("change", renderTasks);
+      await loadMetrics();
+      renderAllSections();
     }
 
     init().catch((error) => {
       document.getElementById("updatedAt").textContent = `Ошибка: ${error.message}`;
+      metrics = metrics || {
+        channels: [],
+        funnel: {},
+        vk_posts: [],
+        events: [],
+        tasks: [],
+        subscribers: {},
+        updated_at: new Date().toISOString()
+      };
+      renderAllSections();
     });
   </script>
 </body>

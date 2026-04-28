@@ -353,7 +353,7 @@
       <div class="card">
         <h2>Таргетированная реклама VK</h2>
         <div class="upload-box">
-          <label for="vkAdsFile" class="btn secondary">Загрузить отчет VK Рекламы (.xlsx)</label>
+          <button id="vkAdsUploadBtn" class="btn secondary" type="button">Загрузить отчет VK Рекламы (.xlsx)</button>
           <input id="vkAdsFile" class="file-input-hidden" type="file" accept=".xlsx,.xls,.csv" />
           <div id="vkAdsUploadStatus" class="subtle">Скачайте отчет из ads.vk.com и загрузите сюда</div>
         </div>
@@ -637,7 +637,19 @@
     function initVkAdsUpload() {
       const input = document.getElementById("vkAdsFile");
       const status = document.getElementById("vkAdsUploadStatus");
-      if (!input || !status) return;
+      const btn = document.getElementById("vkAdsUploadBtn");
+      const box = document.querySelector("#vkads .upload-box");
+      if (!input || !status || !btn) return;
+
+      btn.addEventListener("click", () => input.click());
+      if (box) {
+        box.addEventListener("click", (event) => {
+          const target = event.target;
+          if (target && target.id !== "vkAdsUploadBtn") {
+            input.click();
+          }
+        });
+      }
 
       input.addEventListener("change", () => {
         const file = input.files && input.files[0];

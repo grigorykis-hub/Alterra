@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.parse import urlencode
@@ -185,6 +186,25 @@ def load_vk_posts_from_api(group_id: str):
     return posts
 
 
+def load_telegram_subscribers(channel_username: str):
+    url = f"https://t.me/{channel_username.lstrip('@')}"
+    with urlopen(url, timeout=30) as response:
+        html = response.read().decode("utf-8", errors="replace")
+
+    patterns = [
+        r"([0-9][0-9\s,\.]*)\s+subscribers",
+        r"([0-9][0-9\s,\.]*)\s+подписчик",
+        r"([0-9][0-9\s,\.]*)\s+подписчиков",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, html, flags=re.IGNORECASE)
+        if match:
+            value = re.sub(r"\D+", "", match.group(1))
+            if value:
+                return int(value)
+    raise RuntimeError(f"Не удалось определить число подписчиков Telegram для канала {channel_username}")
+
+
 def merge_vk_posts_with_csv(vk_posts, csv_path: Path):
     rows = read_csv_rows(csv_path)
     by_date = {}
@@ -237,6 +257,7 @@ def rebuild_funnel(channels):
 
 def main():
     group_id = require_env("VK_GROUP_ID")
+    tg_channel = os.getenv("TG_CHANNEL_USERNAME", "alterra_mordovia").strip() or "alterra_mordovia"
 
     channels_csv = Path(os.getenv("CHANNELS_CSV_PATH", INPUT_DIR / "channels_metrics.csv"))
     vk_posts_csv = Path(os.getenv("VK_POSTS_CSV_PATH", INPUT_DIR / "vk_posts_metrics.csv"))
@@ -252,9 +273,22 @@ def main():
         raise RuntimeError("VK API вернул 0 постов, обновление остановлено")
     vk_posts = merge_vk_posts_with_csv(vk_posts, vk_posts_csv)
 
+    previous = {}
+    if DATA_FILE.exists():
+        with DATA_FILE.open("r", encoding="utf-8") as f:
+            previous = json.load(f)
+
     vk_total = load_vk_subscribers(group_id)
-    tg_total = safe_int(os.getenv("TG_SUBSCRIBERS_TOTAL"), 0)
-    tg_growth = safe_int(os.getenv("TG_SUBSCRIBERS_GROWTH_30D"), 0)
+    tg_total_env = os.getenv("TG_SUBSCRIBERS_TOTAL", "").strip()
+    tg_growth_env = os.getenv("TG_SUBSCRIBERS_GROWTH_30D", "").strip()
+
+    tg_total = safe_int(tg_total_env, 0) if tg_total_env else load_telegram_subscribers(tg_channel)
+    if tg_growth_env:
+        tg_growth = safe_int(tg_growth_env, 0)
+    else:
+        prev_tg_total = safe_int(((previous.get("subscribers") or {}).get("tg_total")), 0)
+        tg_growth = tg_total - prev_tg_total if prev_tg_total > 0 else 0
+
     vk_growth = safe_int(os.getenv("VK_SUBSCRIBERS_GROWTH_30D"), 0)
     if vk_growth == 0:
         vk_growth = max(0, sum(safe_int(p.get("subscribers")) for p in vk_posts))

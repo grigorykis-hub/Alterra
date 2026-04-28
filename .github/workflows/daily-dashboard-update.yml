@@ -17,6 +17,7 @@ jobs:
       VK_POSTS_CSV_PATH: data/vk_posts_metrics.csv
       VK_API_TOKEN: ${{ secrets.VK_API_TOKEN }}
       VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}
+      TG_CHANNEL_USERNAME: alterra_mordovia
       TG_SUBSCRIBERS_TOTAL: ${{ secrets.TG_SUBSCRIBERS_TOTAL }}
       TG_SUBSCRIBERS_GROWTH_30D: ${{ secrets.TG_SUBSCRIBERS_GROWTH_30D }}
       VK_SUBSCRIBERS_GROWTH_30D: ${{ secrets.VK_SUBSCRIBERS_GROWTH_30D }}

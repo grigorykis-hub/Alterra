@@ -442,9 +442,34 @@
     }
 
     async function loadMetrics() {
-      const response = await fetch(`./data/alterra_metrics.json?v=${Date.now()}`);
-      if (!response.ok) throw new Error("Не удалось загрузить alterra_metrics.json");
-      metrics = await response.json();
+      const localUrl = `./data/alterra_metrics.json?v=${Date.now()}`;
+      const remoteUrl = `https://raw.githubusercontent.com/grigorykis-hub/Alterra/main/web/data/alterra_metrics.json?v=${Date.now()}`;
+
+      const localResponse = await fetch(localUrl);
+      if (!localResponse.ok) throw new Error("Не удалось загрузить alterra_metrics.json");
+      const localMetrics = await localResponse.json();
+
+      let resolvedMetrics = localMetrics;
+      const localTg = Number((localMetrics.subscribers || {}).tg_total || 0);
+
+      // GitHub Pages sometimes serves stale JSON for a short time after updates.
+      // If Telegram subscribers are missing locally, try the fresh raw file from main.
+      if (localTg === 0) {
+        try {
+          const remoteResponse = await fetch(remoteUrl);
+          if (remoteResponse.ok) {
+            const remoteMetrics = await remoteResponse.json();
+            const remoteTg = Number((remoteMetrics.subscribers || {}).tg_total || 0);
+            if (remoteTg > 0) {
+              resolvedMetrics = remoteMetrics;
+            }
+          }
+        } catch (_) {
+          // Keep local metrics if remote fallback is unavailable.
+        }
+      }
+
+      metrics = resolvedMetrics;
       document.getElementById("updatedAt").textContent =
         `Обновление: ${new Date(metrics.updated_at).toLocaleString("ru-RU")}`;
     }

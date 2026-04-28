@@ -2,7 +2,7 @@ name: Daily Dashboard Update
 
 on:
   schedule:
-    - cron: "10 3 * * *"
+    - cron: "0 8 * * *"
   workflow_dispatch:
 
 permissions:
@@ -12,7 +12,14 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
+    env:
+      CHANNELS_CSV_PATH: data/channels_metrics.csv
+      VK_POSTS_CSV_PATH: data/vk_posts_metrics.csv
+      VK_API_TOKEN: ${{ secrets.VK_API_TOKEN }}
+      VK_GROUP_ID: ${{ secrets.VK_GROUP_ID }}
+      TG_SUBSCRIBERS_TOTAL: ${{ secrets.TG_SUBSCRIBERS_TOTAL }}
+      TG_SUBSCRIBERS_GROWTH_30D: ${{ secrets.TG_SUBSCRIBERS_GROWTH_30D }}
+      VK_SUBSCRIBERS_GROWTH_30D: ${{ secrets.VK_SUBSCRIBERS_GROWTH_30D }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -22,71 +29,33 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Update metrics JSON (self-contained)
+      - name: Validate required real-data inputs
         run: |
-          set -euxo pipefail
-          mkdir -p web/data
-          python - <<'PY'
-          import json, random
-          from datetime import datetime, timezone
-          from pathlib import Path
+          set -euo pipefail
+          if [ -z "${VK_API_TOKEN:-}" ]; then
+            echo "ERROR: Secret VK_API_TOKEN is required"
+            exit 1
+          fi
+          if [ -z "${VK_GROUP_ID:-}" ]; then
+            echo "ERROR: Secret VK_GROUP_ID is required"
+            exit 1
+          fi
+          if [ ! -f "$CHANNELS_CSV_PATH" ]; then
+            echo "ERROR: Required file not found: $CHANNELS_CSV_PATH"
+            exit 1
+          fi
+          if [ ! -f "$VK_POSTS_CSV_PATH" ]; then
+            echo "ERROR: Required file not found: $VK_POSTS_CSV_PATH"
+            exit 1
+          fi
 
-          p = Path("web/data/alterra_metrics.json")
-
-          if p.exists():
-              data = json.loads(p.read_text(encoding="utf-8"))
-          else:
-              data = {
-                  "updated_at": "",
-                  "channels": [
-                      {"name":"Сайт","traffic":0,"leads":0,"cpl":0,"shows":0,"bookings":0,"deals":0,"cac":0,"romi":0},
-                      {"name":"Telegram","traffic":0,"leads":0,"cpl":0,"shows":0,"bookings":0,"deals":0,"cac":0,"romi":0},
-                      {"name":"VK","traffic":0,"leads":0,"cpl":0,"shows":0,"bookings":0,"deals":0,"cac":0,"romi":0}
-                  ],
-                  "funnel": {"traffic":0,"leads":0,"qualified":0,"shows":0,"bookings":0,"deals":0},
-                  "vk_posts": []
-              }
-
-          random.seed(int(datetime.now(timezone.utc).strftime("%Y%m%d")))
-
-          def bump(x, spread=0.1):
-              return max(0, int(round(x + x*random.uniform(-spread, spread))))
-
-          for c in data.get("channels", []):
-              c["traffic"] = bump(int(c.get("traffic", 0)), 0.08)
-              c["leads"] = bump(int(c.get("leads", 0)), 0.10)
-              c["shows"] = bump(int(c.get("shows", 0)), 0.10)
-              c["bookings"] = bump(int(c.get("bookings", 0)), 0.12)
-              c["deals"] = bump(int(c.get("deals", 0)), 0.12)
-              c["cpl"] = bump(int(c.get("cpl", 0)), 0.08)
-              c["cac"] = bump(int(c.get("cac", 0)), 0.08)
-              c["romi"] = round(float(c.get("romi", 0)) + random.uniform(-0.15, 0.15), 2)
-
-          ch = data["channels"]
-          traffic = sum(int(x.get("traffic", 0)) for x in ch)
-          leads = sum(int(x.get("leads", 0)) for x in ch)
-          shows = sum(int(x.get("shows", 0)) for x in ch)
-          bookings = sum(int(x.get("bookings", 0)) for x in ch)
-          deals = sum(int(x.get("deals", 0)) for x in ch)
-
-          data["funnel"] = {
-              "traffic": traffic,
-              "leads": leads,
-              "qualified": int(round(leads * 0.54)),
-              "shows": shows,
-              "bookings": bookings,
-              "deals": deals
-          }
-
-          data["updated_at"] = datetime.now(timezone.utc).isoformat()
-
-          p.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-          print("updated:", p)
-          PY
+      - name: Update dashboard data
+        run: |
+          set -euo pipefail
+          python -u scripts/update_dashboard_data.py
 
       - name: Commit changes
         run: |
-          set -euxo pipefail
           if git diff --quiet; then
             echo "No changes"
             exit 0

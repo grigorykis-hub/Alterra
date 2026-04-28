@@ -109,7 +109,14 @@ def load_vk_subscribers(group_id: str):
     data = vk_api_request("groups.getById", {"group_id": group_id, "fields": "members_count"})
     if not data:
         raise RuntimeError("VK API не вернул данные группы")
-    first = data[0]
+    # VK API may return either a list or an object with "groups".
+    if isinstance(data, dict):
+        groups = data.get("groups") or []
+        if not groups:
+            raise RuntimeError("VK API не вернул список групп в groups.getById")
+        first = groups[0]
+    else:
+        first = data[0]
     return safe_int(first.get("members_count"))
 
 

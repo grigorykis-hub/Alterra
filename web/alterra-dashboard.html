@@ -219,6 +219,16 @@
       text-align: center;
       margin-bottom: 12px;
     }
+    .file-input-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
     .checklist {
       margin: 0;
       padding-left: 20px;
@@ -343,8 +353,9 @@
       <div class="card">
         <h2>Таргетированная реклама VK</h2>
         <div class="upload-box">
-          Загрузить отчет VK Рекламы (.xlsx)<br />
-          <span class="subtle">Скачайте отчет из ads.vk.com и загрузите сюда</span>
+          <label for="vkAdsFile" class="btn secondary">Загрузить отчет VK Рекламы (.xlsx)</label>
+          <input id="vkAdsFile" class="file-input-hidden" type="file" accept=".xlsx,.xls,.csv" />
+          <div id="vkAdsUploadStatus" class="subtle">Скачайте отчет из ads.vk.com и загрузите сюда</div>
         </div>
       </div>
       <div class="card">
@@ -623,6 +634,24 @@
       document.getElementById("tasksTable").innerHTML = rows || `<tr><td colspan="5" class="subtle">Нет реальных данных по задачам</td></tr>`;
     }
 
+    function initVkAdsUpload() {
+      const input = document.getElementById("vkAdsFile");
+      const status = document.getElementById("vkAdsUploadStatus");
+      if (!input || !status) return;
+
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const ext = file.name.toLowerCase().split(".").pop();
+        if (!["xlsx", "xls", "csv"].includes(ext)) {
+          status.textContent = "Поддерживаются только .xlsx, .xls или .csv";
+          input.value = "";
+          return;
+        }
+        status.textContent = `Файл выбран: ${file.name}. Для автообновления добавьте данные в data/vk_posts_metrics.csv и запустите обновление.`;
+      });
+    }
+
     function initNavigation() {
       document.querySelectorAll(".nav-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -642,6 +671,7 @@
       renderEvents();
       renderVkAds();
       renderTasks();
+      initVkAdsUpload();
       initNavigation();
       document.getElementById("taskStatusFilter").addEventListener("change", renderTasks);
     }

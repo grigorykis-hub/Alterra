@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-15T10:11:58.685973+00:00",
+  "updated_at": "2026-05-16T09:20:22.723009+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -47,14 +47,14 @@
     "vk_total": 361,
     "vk_growth_30d": 0,
     "tg_total": 497,
-    "tg_growth_30d": -1
+    "tg_growth_30d": 0
   },
   "vk_posts": [
     {
       "date": "2026-05-05",
       "topic": "Проект «Гармония» — загородная жизнь без лишних хлопот 🏡  Мн...",
       "format": "Фото",
-      "reach": 302,
+      "reach": 303,
       "likes": 3,
       "comments": 0,
       "reposts": 1,

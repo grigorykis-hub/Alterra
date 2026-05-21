@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-20T10:41:15.781950+00:00",
+  "updated_at": "2026-05-21T10:58:20.595994+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -44,21 +44,21 @@
     "deals": 0
   },
   "subscribers": {
-    "vk_total": 368,
+    "vk_total": 370,
     "vk_growth_30d": 0,
-    "tg_total": 480,
-    "tg_growth_30d": -3
+    "tg_total": 482,
+    "tg_growth_30d": 2
   },
   "vk_posts": [
     {
       "date": "2026-05-05",
       "topic": "Проект «Гармония» — загородная жизнь без лишних хлопот 🏡  Мн...",
       "format": "Фото",
-      "reach": 419,
+      "reach": 473,
       "likes": 3,
       "comments": 0,
       "reposts": 1,
-      "er": 0.95,
+      "er": 0.85,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,
@@ -77,11 +77,11 @@
       "date": "2026-04-23",
       "topic": "🏡 Знаем, что текущие банковские ставки многих заставили отло...",
       "format": "Фото",
-      "reach": 600,
+      "reach": 639,
       "likes": 2,
       "comments": 0,
       "reposts": 0,
-      "er": 0.33,
+      "er": 0.31,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,
@@ -100,11 +100,11 @@
       "date": "2026-03-25",
       "topic": "Друзья, дарим 1 000 000 рублей на легкий старт стройки в Аль...",
       "format": "Фото",
-      "reach": 880,
+      "reach": 910,
       "likes": 20,
       "comments": 0,
       "reposts": 1,
-      "er": 2.39,
+      "er": 2.31,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,

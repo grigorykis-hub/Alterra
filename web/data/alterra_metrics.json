@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-22T08:16:32.681807+00:00",
+  "updated_at": "2026-08-23T08:17:12.253886+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -44,21 +44,21 @@
     "deals": 0
   },
   "subscribers": {
-    "vk_total": 413,
+    "vk_total": 412,
     "vk_growth_30d": 0,
-    "tg_total": 719,
-    "tg_growth_30d": -4
+    "tg_total": 718,
+    "tg_growth_30d": -1
   },
   "vk_posts": [
     {
       "date": "2026-07-28",
       "topic": "«Мы сидели на кухне съемной двушки, смотрели на ценники в но...",
       "format": "Фото",
-      "reach": 516,
+      "reach": 524,
       "likes": 4,
       "comments": 0,
       "reposts": 0,
-      "er": 0.78,
+      "er": 0.76,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,
@@ -77,7 +77,7 @@
       "date": "2026-06-30",
       "topic": "Отличные новости из «Альтерра»: Да будет свет!    Мы с радос...",
       "format": "Фото",
-      "reach": 1069,
+      "reach": 1079,
       "likes": 2,
       "comments": 0,
       "reposts": 1,

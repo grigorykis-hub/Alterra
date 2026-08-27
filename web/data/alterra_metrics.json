@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-26T08:29:46.612807+00:00",
+  "updated_at": "2026-08-27T18:29:25.952673+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -44,21 +44,44 @@
     "deals": 0
   },
   "subscribers": {
-    "vk_total": 414,
+    "vk_total": 415,
     "vk_growth_30d": 0,
-    "tg_total": 717,
-    "tg_growth_30d": 0
+    "tg_total": 814,
+    "tg_growth_30d": 97
   },
   "vk_posts": [
+    {
+      "date": "2026-08-26",
+      "topic": "Друзья, стройка — это всегда живой процесс, за которым интер...",
+      "format": "Фото",
+      "reach": 233,
+      "likes": 3,
+      "comments": 0,
+      "reposts": 2,
+      "er": 2.15,
+      "ctr": 0.0,
+      "clicks": 0,
+      "leads": 0,
+      "cpl": 0,
+      "shows": 0,
+      "bookings": 0,
+      "deals": 0,
+      "romi": 0.0,
+      "frequency": 0.0,
+      "cpc": 0.0,
+      "cpf": 0.0,
+      "budget": 0.0,
+      "subscribers": 0
+    },
     {
       "date": "2026-07-28",
       "topic": "«Мы сидели на кухне съемной двушки, смотрели на ценники в но...",
       "format": "Фото",
-      "reach": 561,
+      "reach": 605,
       "likes": 4,
       "comments": 0,
       "reposts": 0,
-      "er": 0.71,
+      "er": 0.66,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,
@@ -77,11 +100,11 @@
       "date": "2026-06-30",
       "topic": "Отличные новости из «Альтерра»: Да будет свет!    Мы с радос...",
       "format": "Фото",
-      "reach": 1112,
+      "reach": 1145,
       "likes": 2,
       "comments": 0,
       "reposts": 1,
-      "er": 0.27,
+      "er": 0.26,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,

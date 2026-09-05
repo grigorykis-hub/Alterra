@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-04T12:20:35.599684+00:00",
+  "updated_at": "2026-09-05T11:27:46.416005+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -46,19 +46,19 @@
   "subscribers": {
     "vk_total": 417,
     "vk_growth_30d": 0,
-    "tg_total": 802,
-    "tg_growth_30d": 0
+    "tg_total": 800,
+    "tg_growth_30d": -2
   },
   "vk_posts": [
     {
       "date": "2026-08-26",
       "topic": "Друзья, стройка — это всегда живой процесс, за которым интер...",
       "format": "Фото",
-      "reach": 349,
+      "reach": 353,
       "likes": 3,
       "comments": 0,
       "reposts": 2,
-      "er": 1.43,
+      "er": 1.42,
       "ctr": 0.0,
       "clicks": 0,
       "leads": 0,
@@ -77,7 +77,7 @@
       "date": "2026-07-28",
       "topic": "«Мы сидели на кухне съемной двушки, смотрели на ценники в но...",
       "format": "Фото",
-      "reach": 673,
+      "reach": 674,
       "likes": 4,
       "comments": 0,
       "reposts": 0,

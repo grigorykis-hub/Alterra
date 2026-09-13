@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-12T11:46:58.197190+00:00",
+  "updated_at": "2026-09-13T12:54:50.135322+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -46,7 +46,7 @@
   "subscribers": {
     "vk_total": 422,
     "vk_growth_30d": 0,
-    "tg_total": 607,
+    "tg_total": 606,
     "tg_growth_30d": -1
   },
   "vk_posts": [
@@ -54,7 +54,7 @@
       "date": "2026-09-08",
       "topic": "Опять эти бесконечные качели со ставками и семейной ипотекой...",
       "format": "Фото",
-      "reach": 176,
+      "reach": 178,
       "likes": 0,
       "comments": 0,
       "reposts": 0,

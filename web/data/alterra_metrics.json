@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-11-26T17:57:38.655914+00:00",
+  "updated_at": "2026-11-27T17:42:45.432656+00:00",
   "channels": [
     {
       "name": "Сайт",
@@ -44,9 +44,9 @@
     "deals": 0
   },
   "subscribers": {
-    "vk_total": 434,
+    "vk_total": 433,
     "vk_growth_30d": 0,
-    "tg_total": 835,
+    "tg_total": 834,
     "tg_growth_30d": -1
   },
   "vk_posts": [
